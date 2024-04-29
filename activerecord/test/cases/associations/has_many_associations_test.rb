@@ -1224,6 +1224,13 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal new_client, company.clients_of_firm.last
   end
 
+  def test_build_association_attribute_setter
+    company = companies(:first_firm)
+    contract = company.contracts.build(name: "changed")
+
+    assert_equal contract.name, "#{company.name} changed"
+  end
+
   def test_build_many_via_block
     company = companies(:first_firm)
 

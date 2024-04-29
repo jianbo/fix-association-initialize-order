@@ -356,10 +356,11 @@ module ActiveRecord
         def stale_state
         end
 
-        def build_record(attributes)
-          reflection.build_association(attributes) do |record|
+        def build_record(attributes, &block)
+          reflection.build_association(attributes) do |record, &_on_init_callback|
             initialize_attributes(record, attributes)
-            yield(record) if block_given?
+            _on_init_callback.call
+            block.call(record) if block
           end
         end
 

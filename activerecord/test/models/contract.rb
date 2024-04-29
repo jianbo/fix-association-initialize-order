@@ -11,6 +11,7 @@ class Contract < ActiveRecord::Base
   after_save :bye
 
   attr_accessor :hi_count, :bye_count
+  attr_reader :name
 
   def hi
     @hi_count ||= 0
@@ -20,6 +21,10 @@ class Contract < ActiveRecord::Base
   def bye
     @bye_count ||= 0
     @bye_count += 1
+  end
+
+  def name=(name)
+    @name = "#{company.name} #{name}"
   end
 
   def update_metadata

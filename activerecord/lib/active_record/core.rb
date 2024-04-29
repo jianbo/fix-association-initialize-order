@@ -449,16 +449,25 @@ module ActiveRecord
     # ==== Example
     #   # Instantiates a single new object
     #   User.new(first_name: 'Jamie')
-    def initialize(attributes = nil)
+    def initialize(attributes = nil, &block)
       @new_record = true
       @attributes = self.class._default_attributes.deep_dup
 
       init_internals
       initialize_internals_callback
 
-      super
-
-      yield self if block_given?
+      if block
+        if block.parameters.any? { |_, name| name == :_on_init_callback }
+          block.call(self) do
+            super
+          end
+        else
+          super
+          block.call(self)
+        end
+      else
+        super
+      end
       _run_initialize_callbacks
     end
 
